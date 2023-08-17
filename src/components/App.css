@@ -36,3 +36,61 @@
     transform: rotate(360deg);
   }
 }
+
+/* Make the scroll bar visible */
+
+.display::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 8px;
+}
+.display::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0,0,0,.5);
+  box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+/* Background */
+
+html{
+  background: linear-gradient(to right, #f9abab, #8181f4);
+  /* height: 100vh; */
+}
+
+/* Calculator */
+
+.App {
+  border: 2px solid white;
+  border-radius: 15px;
+  width: 42%;
+  margin: 2rem auto 0;
+}
+
+.calculator-wrapper {
+  margin: 1rem;
+}
+
+.display {
+  border: 3px solid rgba(255, 255, 255, 0.493);
+  border-radius: 15px;
+  color: rgb(0, 0, 250);
+  margin-bottom: 1rem;
+  height: 5rem;
+  background-color: rgba(255, 255, 255, 0.226);
+  overflow-x: scroll;
+  /* text-overflow: ellipsis; */
+  /* white-space: nowrap; */
+  /* padding-right: 1rem; */
+  font-size: 2.5rem;
+  /* display: flex;
+  align-items: center;
+  justify-content: flex-end; */
+  /* width: 100%; */
+  margin: 0 auto 1rem;
+  /* display: grid; */
+}
+
+
+.calculation-display {
+  margin: auto 1rem;
+}
+
