@@ -1,4 +1,4 @@
-export const calculatorButtons = [
+const calculatorButtons = [
     {
         type: 'clear',
         className: 'ac',
@@ -156,3 +156,5 @@ export const calculatorButtons = [
         value: 'Equal',
     }
 ]
+
+export default calculatorButtons
