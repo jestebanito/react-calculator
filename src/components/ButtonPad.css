@@ -7,9 +7,10 @@ button {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    width: 30rem;
+    /* width: 30rem; */
     height: 10rem;
     gap: 0.15rem;
+    margin: 1rem auto 2rem;
   }
   
 

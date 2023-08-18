@@ -1,18 +1,18 @@
 import calculatorButtons from "../ButtonData/data/calculator-bonus-03-button-data";
 import "./ButtonPad.css";
 
-const ButtonPad = () => {
+const ButtonPad = ({handleButtonPress}) => {
   return (
 
     <div className="numPad">
-      {calculatorButtons.map(button => (
+      {calculatorButtons.map(buttonData => (
         <button
-          key={button.className}
-          className={`button ${button.className}`}
-          type={button.type}
-          // onClick={() => onButtonClick(button.value)}
+          key={buttonData.className}
+          className={`button ${buttonData.className}`}
+          type={buttonData.type}
+          onClick={() => handleButtonPress(buttonData)}
         >
-          {button.text}
+          {buttonData.text}
         </button>
       ))}
     </div>
