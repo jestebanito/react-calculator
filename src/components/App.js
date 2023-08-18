@@ -70,9 +70,11 @@ function App() {
       } else if (clear === "C") {
         if (displayString.length === 2 && signDisplay === "-") {
           setDisplayString("0");
+          setSignDisplay("");
+          setSignValue(1);
         } else if (displayString.length === 1) {
           setDisplayString("0");
-        } else if (displayString !== "0") {
+        } else {
           setDisplayString(displayString.slice(0, -1));
         }
       }
