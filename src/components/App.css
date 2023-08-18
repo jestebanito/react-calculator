@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Orbitron Bold';
+  src: url('../webfonts/Orbitron-Medium.ttf');
+  font-display: swap; 
+}
+
 .App {
   text-align: center;
 }
@@ -85,6 +91,7 @@ html{
   padding-bottom: 0;
   height: fit-content;
   margin: auto;
+  font-family: 'Orbitron Bold';
 }
 
 
