@@ -13,6 +13,7 @@ function App() {
   const [lastCharacter, setLastCharacter] = useState("");
   const [signDisplay, setSignDisplay] = useState("");
   const [signValue, setSignValue] = useState(1);
+  const [operatorDisplay, setOperatorDisplay] = useState("");
 
   function handleButtonPress(buttonData) {
     switch (buttonData.type) {
@@ -28,6 +29,12 @@ function App() {
         break;
       case "clear":
         processClearPress(buttonData.text);
+        break;
+      case "operator":
+        processOperatorPress(buttonData.text);
+        break;
+      case "enter":
+        processEnterPress(buttonData.text);
         break;
     }
 
@@ -48,6 +55,50 @@ function App() {
       } else {
         return;
       }
+    }
+
+    function processOperatorPress(operator) {
+    // Add the operator to the displayString
+    if (buttonData.type === "operator") {
+      setDisplayString(`${displayString}${operator}`);
+      }
+      if (operator === '\u221a') {
+        setDisplayString(displayString.slice(0, -1) + operator);
+      }
+    }
+
+    function processEnterPress(enter) {
+      if (enter === "=") {
+        // Replace Unicode division symbol with actual '/'
+        let evaluatedString = displayString
+        .replace(/\u00f7/g, '/')
+        .replace(/\u00d7/g, '*')
+        // Check if square root operator is present
+        if (evaluatedString.includes('\u221a')) {
+          evaluatedString = evaluatedString.replace(/\u221a/g, 'Math.sqrt(') + ')';
+        }
+        // Check if percent symbol is present
+        if (evaluatedString.includes('%')) {
+          // Check if percent symbol is present after a number
+          const percentRegex = /(\d+)\s*%/g;
+          evaluatedString = evaluatedString.replace(percentRegex, (_, num, index, input) => {
+            const percentage = parseInt(num, 10) * 0.01;
+            const precedingNumber = parseFloat(input.substring(0, index));
+            return `(${precedingNumber} - (${precedingNumber} * ${percentage}))`;
+          });
+
+        }
+        try {
+          console.log(evaluatedString);
+          const result = eval(evaluatedString);
+          setDisplayString(result);
+        } catch (error) {
+          // Handle any evaluation errors
+          setDisplayString("Error");
+          console.log(error);
+        }
+      }
+
     }
 
     function processSignPress() {
