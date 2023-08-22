@@ -61,6 +61,9 @@ function App() {
     // Add the operator to the displayString
     if (buttonData.type === "operator") {
       setDisplayString(`${displayString}${operator}`);
+      if(operator != "%" && operator != "\u221a") {
+        setOperatorDisplay(operator);
+      }
       }
       if (operator === '\u221a') {
         setDisplayString(displayString.slice(0, -1) + operator);
@@ -86,12 +89,13 @@ function App() {
           evaluatedString = evaluatedString.replace(percentRegex, (_, num, index, input) => {
             const percentage = parseInt(num, 10) * 0.01;
             const precedingNumber = parseFloat(input.substring(0, index));
-            tempEvaluatedString = `(${precedingNumber} - (${precedingNumber} * ${percentage}))`;
+            tempEvaluatedString = `(${precedingNumber} ${operatorDisplay} (${precedingNumber} * ${percentage}))`;
             return '';
           });
           evaluatedString = tempEvaluatedString;
         }
         try {
+          console.log(evaluatedString)
           let result = eval(evaluatedString);
           setDisplayString(result);
         } catch (error) {
