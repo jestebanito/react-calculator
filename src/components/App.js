@@ -79,18 +79,20 @@ function App() {
         }
         // Check if percent symbol is present
         if (evaluatedString.includes('%')) {
+          // Create variable to set evaluatedString to the formula on line 91 OUTSIDE of the arrow function scope
+          let tempEvaluatedString = evaluatedString;
           // Check if percent symbol is present after a number
           const percentRegex = /(\d+)\s*%/g;
           evaluatedString = evaluatedString.replace(percentRegex, (_, num, index, input) => {
             const percentage = parseInt(num, 10) * 0.01;
             const precedingNumber = parseFloat(input.substring(0, index));
-            return `(${precedingNumber} - (${precedingNumber} * ${percentage}))`;
+            tempEvaluatedString = `(${precedingNumber} - (${precedingNumber} * ${percentage}))`;
+            return '';
           });
-
+          evaluatedString = tempEvaluatedString;
         }
         try {
-          console.log(evaluatedString);
-          const result = eval(evaluatedString);
+          let result = eval(evaluatedString);
           setDisplayString(result);
         } catch (error) {
           // Handle any evaluation errors
