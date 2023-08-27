@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import ButtonPad from "./ButtonPad";
 
-let decimalExisted = false;
+// let decimalExisted = false;
 
 function App() {
   // use this state to update the value on display
@@ -14,6 +14,8 @@ function App() {
   const [signDisplay, setSignDisplay] = useState("");
   const [signValue, setSignValue] = useState(1);
   const [operatorDisplay, setOperatorDisplay] = useState("");
+  // created a new state variable to track if an operation has been completed
+  const [operationCompleted, setOperationCompleted] = useState(false);
 
   function handleButtonPress(buttonData) {
     switch (buttonData.type) {
@@ -21,7 +23,7 @@ function App() {
         processNumberPress(buttonData.value);
         break;
       default:
-      case "decimal":
+        case "decimal":
         processDecimalPress(buttonData.value);
         break;
       case "sign":
@@ -38,37 +40,71 @@ function App() {
         break;
     }
 
+    // function processNumberPress(number) {
+    //   if (displayString === "0") {
+    //     setDisplayString(`${number}`);
+    //   } else {
+    //     setDisplayString(`${displayString}${number}`);
+    //   }
+    // }    
+
     function processNumberPress(number) {
-      if (displayString === "0") {
+      // Added an if statement for when an operation is completed
+      if (operationCompleted) {
+        setDisplayString(`${number}`);
+        setOperationCompleted(false); // Reset operationCompleted
+      } else if (displayString === "0") {
         setDisplayString(`${number}`);
       } else {
         setDisplayString(`${displayString}${number}`);
       }
     }
+    
+    // function processDecimalPress(decimal) {
+    //   if (decimalExisted === false) {
+    //     console.log(decimalExisted);
+    //     setDisplayString(`${displayString}${decimal}`);
+    //     decimalExisted = true;
+    //     console.log(decimalExisted);
+    //   } else {
+    //     return;
+    //   }
+    // }
 
     function processDecimalPress(decimal) {
-      if (decimalExisted === false) {
-        console.log(decimalExisted);
+      // Check if the last character in the displayString is an operator
+      const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
+    
+      // Check if a decimal point already exists in the current number
+      const decimalPointAlreadyExists = displayString.includes(".");
+    if (!decimalPointAlreadyExists || lastCharIsOperator) {
+        // If there's no decimal point in the current number or the last character is an operator,
+        // you can add the decimal point.
         setDisplayString(`${displayString}${decimal}`);
-        decimalExisted = true;
-        console.log(decimalExisted);
-      } else {
-        return;
       }
     }
-
+    
     function processOperatorPress(operator) {
-    // Add the operator to the displayString
-    if (buttonData.type === "operator") {
-      setDisplayString(`${displayString}${operator}`);
-      if(operator != "%" && operator != "\u221a") {
-        setOperatorDisplay(operator);
-      }
-      }
-      if (operator === '\u221a') {
-        setDisplayString(displayString.slice(0, -1) + operator);
+      if (operationCompleted) {
+        setDisplayString(`${displayString}${operator}`);
+        setOperationCompleted(false);
+        if (operator !== "%" && operator !== "\u221a") {
+          setOperatorDisplay(operator);
+        }
+      } else {
+        // Add the operator to the displayString
+        if (buttonData.type === "operator") {
+          setDisplayString(`${displayString}${operator}`);
+          if (operator !== "%" && operator !== "\u221a") {
+            setOperatorDisplay(operator);
+          }
+          if (operator === "\u221a") {
+            setDisplayString(displayString.slice(0, -1) + operator);
+          }
+        }
       }
     }
+    
 
     function processEnterPress(enter) {
       if (enter === "=") {
@@ -103,8 +139,9 @@ function App() {
           setDisplayString("Error");
           console.log(error);
         }
+        // Set the boolean value to true if enter === "="
+        setOperationCompleted(true);
       }
-
     }
 
     function processSignPress() {
