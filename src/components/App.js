@@ -5,8 +5,8 @@ import { useState } from "react";
 
 import ButtonPad from "./ButtonPad";
 
-
 let operatorExisted = false;
+
 
 function App() {
   // use this state to update the value on display
@@ -14,9 +14,11 @@ function App() {
   const [lastCharacter, setLastCharacter] = useState("");
   const [signDisplay, setSignDisplay] = useState("");
   const [signValue, setSignValue] = useState(1);
-  const [operatorDisplay, setOperatorDisplay] = useState("");
+  // const [operatorDisplay, setOperatorDisplay] = useState("");
   // created a new state variable to track if an operation has been completed
   const [operationCompleted, setOperationCompleted] = useState(false);
+  // created a memory state to store memory value
+  const [memoryValue, setMemoryValue] = useState("0");
 
   function handleButtonPress(buttonData) {
     switch (buttonData.type) {
@@ -39,8 +41,10 @@ function App() {
       case "enter":
         processEnterPress(buttonData.text);
         break;
+      case "memory":
+        processMemoryPress(buttonData.text);
+        break;
     }
-
 
     function processNumberPress(number) {
       // Added an if statement for when an operation is completed
@@ -56,7 +60,6 @@ function App() {
       }
       setLastCharacter(number);
     }
-
 
     function processDecimalPress(decimal) {
       // Check if the last character in the displayString is an operator
@@ -76,10 +79,10 @@ function App() {
       if (!operatorExisted && operator !== "%" && operator !== "\u221a") {
         setDisplayString(`${displayString} ${operator} `);
         setLastCharacter(operator);
-        // setOperationCompleted(false);
-        if (operator !== "%" && operator !== "\u221a") {
-          setOperatorDisplay(operator);
-        }
+    
+        // if (operator !== "%" && operator !== "\u221a") {
+        //   setOperatorDisplay(operator);
+        // }
         operatorExisted = true;
         // HANDLE PERCENTAGE
       } else if (operator === "%") {
@@ -213,7 +216,6 @@ function App() {
           .replace(/\u00f7/g, "/")
           .replace(/\u00d7/g, "*");
         try {
-        
           let result = saferEval(evaluatedString);
           setDisplayString(result);
         } catch (error) {
@@ -247,7 +249,7 @@ function App() {
         setOperationCompleted(false);
         setSignDisplay("");
         setSignValue(1);
-        setOperatorDisplay("");
+        // setOperatorDisplay("");
       } else if (clear === "C") {
         if (displayString.length === 2 && signDisplay === "-") {
           setDisplayString("0");
@@ -258,6 +260,110 @@ function App() {
         } else {
           setDisplayString(displayString.slice(0, -1));
         }
+      }
+    }
+
+    function processMemoryPress(memory) {
+      const lastCharIsOperator = "+-*/".includes(lastCharacter);
+      // Memory Store
+      if (memory === "MS") {
+        if (operatorExisted && !lastCharIsOperator) {
+          // Replace Unicode division symbol with actual '/'
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          try {
+            let result = saferEval(evaluatedString);
+            let stringResult = result.toString();
+            setMemoryValue(stringResult);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+        } else if (operatorExisted && lastCharIsOperator) {
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          let newEvaluatedString = evaluatedString.slice(0, -2);
+
+          try {
+            setMemoryValue(newEvaluatedString);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+        } else {
+          // Replace Unicode division symbol with actual '/'
+
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          try {
+            setMemoryValue(evaluatedString);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+
+          setOperationCompleted(true);
+        }
+        // Memory Clear
+      } else if (memory === "MC") {
+        setMemoryValue("0");
+        // Memory Recall
+      } else if (memory === "MR") {
+        if (operatorExisted && lastCharIsOperator) {
+          // check if there is there is one operator existed already eg: 10 +
+          setDisplayString(`${displayString} ${memoryValue} `);
+        } else {
+          setDisplayString(memoryValue);
+        }
+        // Memory Plus
+      } else if (memory === "M+") {
+        if (operatorExisted && !lastCharIsOperator) {
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          try {
+            let result = saferEval(evaluatedString) + saferEval(memoryValue);
+            let stringResult = result.toString();
+            setMemoryValue(stringResult);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+        } else if (operatorExisted && lastCharIsOperator) {
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          let newEvaluatedString = evaluatedString.slice(0, -2);
+
+          try {
+            let result = saferEval(newEvaluatedString) + saferEval(memoryValue);
+            let stringResult = result.toString();
+            setMemoryValue(stringResult);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+        } else {
+          setMemoryValue(
+            (prevMemoryValue) =>
+              saferEval(prevMemoryValue) + saferEval(displayString)
+          );
+        }
+      } else if (memory === "M-") {
+
       }
     }
   }
