@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import ButtonPad from "./ButtonPad";
 
-// let decimalExisted = false;
+
 let operatorExisted = false;
 
 function App() {
@@ -41,13 +41,6 @@ function App() {
         break;
     }
 
-    // function processNumberPress(number) {
-    // if (displayString === "0") {
-    //   setDisplayString(`${number}`);
-    // } else {
-    //   setDisplayString(`${displayString}${number}`);
-    // }
-    // }
 
     function processNumberPress(number) {
       // Added an if statement for when an operation is completed
@@ -64,16 +57,6 @@ function App() {
       setLastCharacter(number);
     }
 
-    // function processDecimalPress(decimal) {
-    //   if (decimalExisted === false) {
-    //     console.log(decimalExisted);
-    //     setDisplayString(`${displayString}${decimal}`);
-    //     decimalExisted = true;
-    //     console.log(decimalExisted);
-    //   } else {
-    //     return;
-    //   }
-    // }
 
     function processDecimalPress(decimal) {
       // Check if the last character in the displayString is an operator
@@ -103,8 +86,9 @@ function App() {
         if (operatorExisted && !lastCharIsOperator) {
           // Replace Unicode division symbol with actual '/'
           let evaluatedString = displayString
-            // .replace(/\u00f7/g, "/")
-            // .replace(/\u00d7/g, "*");
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
           try {
             let result = eval(evaluatedString) / 100;
             setDisplayString(result);
@@ -116,8 +100,9 @@ function App() {
           setOperationCompleted(true);
         } else if (operatorExisted && lastCharIsOperator) {
           let evaluatedString = displayString
-            // .replace(/\u00f7/g, "/")
-            // .replace(/\u00d7/g, "*");
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
           let newEvaluatedString = evaluatedString.slice(0, -2);
           console.log(newEvaluatedString);
           try {
@@ -130,10 +115,11 @@ function App() {
 
           setOperationCompleted(true);
         } else {
-          // Replace Unicode division symbol with actual '/'
+          // Replace Unicode division symbol with actual '/, *'
           let evaluatedString = displayString
-            // .replace(/\u00f7/g, "/")
-            // .replace(/\u00d7/g, "*");
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
           try {
             let result = eval(evaluatedString) / 100;
             setDisplayString(result);
@@ -144,18 +130,64 @@ function App() {
 
           setOperationCompleted(true);
         }
-      }
-      // else if (operator === "\u221a") {
+      } else if (operator === "\u221a") {
+        const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
+        if (operatorExisted && !lastCharIsOperator) {
+          // Replace Unicode division symbol with actual '/'
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
 
-      // }
-      else {
-        // Add the operator to the displayString
-        // if (operator !== "%" && operator !== "\u221a") {
-        //   setOperatorDisplay(operator);
-        // }
-        // if (operator === "\u221a") {
-        //   setDisplayString(displayString.slice(0, -1) + operator);
-        // }
+          try {
+            console.log("enter step 1");
+            let result = eval(evaluatedString);
+            console.log(result);
+            let resultAfterSquareRoot = Math.sqrt(result);
+            setDisplayString(resultAfterSquareRoot);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+
+          setOperationCompleted(true);
+        } else if (operatorExisted && lastCharIsOperator) {
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          let newEvaluatedString = evaluatedString.slice(0, -2);
+          console.log(newEvaluatedString);
+          try {
+            let result = eval(newEvaluatedString);
+            let resultAfterSquareRoot = Math.sqrt(result);
+            setDisplayString(resultAfterSquareRoot);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+
+          setOperationCompleted(true);
+        } else {
+          // Replace Unicode division symbol with actual '/'
+
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          try {
+            let result = eval(evaluatedString);
+            let resultAfterSquareRoot = Math.sqrt(result);
+            setDisplayString(resultAfterSquareRoot);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+
+          setOperationCompleted(true);
+        }
       }
     }
 
@@ -164,30 +196,9 @@ function App() {
         operatorExisted = false;
         // Replace Unicode division symbol with actual '/'
         let evaluatedString = displayString
+          .toString()
           .replace(/\u00f7/g, "/")
           .replace(/\u00d7/g, "*");
-        // Check if square root operator is present
-        if (evaluatedString.includes("\u221a")) {
-          evaluatedString =
-            evaluatedString.replace(/\u221a/g, "Math.sqrt(") + ")";
-        }
-        // Check if percent symbol is present
-        // if (evaluatedString.includes("%")) {
-        // // Create variable to set evaluatedString to the formula on line 91 OUTSIDE of the arrow function scope
-        // let tempEvaluatedString = evaluatedString;
-        // // Check if percent symbol is present after a number
-        // const percentRegex = /(\d+)\s*%/g;
-        // evaluatedString = evaluatedString.replace(
-        //   percentRegex,
-        //   (_, num, index, input) => {
-        //     const percentage = parseInt(num, 10) * 0.01;
-        //     const precedingNumber = parseFloat(input.substring(0, index));
-        //     tempEvaluatedString = `(${precedingNumber} ${operatorDisplay} (${precedingNumber} * ${percentage}))`;
-        //     return "";
-        //   }
-        // );
-        // evaluatedString = tempEvaluatedString;
-        // }
         try {
           console.log(evaluatedString);
           let result = eval(evaluatedString);
@@ -238,9 +249,6 @@ function App() {
     }
   }
 
-  // const handleButtonClick = (value) => {
-  //   setInputValue(prevValue => prevValue + value);
-  // };
   return (
     <div className="App">
       <h1>React Calculator</h1>
