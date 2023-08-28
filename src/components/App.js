@@ -81,6 +81,7 @@ function App() {
           setOperatorDisplay(operator);
         }
         operatorExisted = true;
+        // HANDLE PERCENTAGE
       } else if (operator === "%") {
         const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
         if (operatorExisted && !lastCharIsOperator) {
@@ -90,7 +91,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
           try {
-            let result = eval(evaluatedString) / 100;
+            let result = saferEval(evaluatedString) / 100;
             setDisplayString(result);
           } catch (error) {
             // Handle any evaluation errors
@@ -106,7 +107,7 @@ function App() {
           let newEvaluatedString = evaluatedString.slice(0, -2);
           console.log(newEvaluatedString);
           try {
-            let result = eval(newEvaluatedString) / 100;
+            let result = saferEval(newEvaluatedString) / 100;
             setDisplayString(result);
           } catch (error) {
             // Handle any evaluation errors
@@ -121,7 +122,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
           try {
-            let result = eval(evaluatedString) / 100;
+            let result = saferEval(evaluatedString) / 100;
             setDisplayString(result);
           } catch (error) {
             // Handle any evaluation errors
@@ -130,6 +131,7 @@ function App() {
 
           setOperationCompleted(true);
         }
+        // HANDLE SQUARE ROOT
       } else if (operator === "\u221a") {
         const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
         if (operatorExisted && !lastCharIsOperator) {
@@ -141,7 +143,7 @@ function App() {
 
           try {
             console.log("enter step 1");
-            let result = eval(evaluatedString);
+            let result = saferEval(evaluatedString);
             console.log(result);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
@@ -160,7 +162,7 @@ function App() {
           let newEvaluatedString = evaluatedString.slice(0, -2);
           console.log(newEvaluatedString);
           try {
-            let result = eval(newEvaluatedString);
+            let result = saferEval(newEvaluatedString);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
           } catch (error) {
@@ -178,7 +180,7 @@ function App() {
             .replace(/\u00d7/g, "*");
 
           try {
-            let result = eval(evaluatedString);
+            let result = saferEval(evaluatedString);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
           } catch (error) {
@@ -190,6 +192,17 @@ function App() {
         }
       }
     }
+    function saferEval(mathString) {
+      const notValid = /[a-zA-Z|;]/g.test(mathString);
+      if (notValid) {
+        console.error("Invalid math string!");
+        return "";
+      }
+      // The regex above helps to prevent malicious code from being executed
+      // Using new Function() is safer than using eval(), but it is still not "safe"
+
+      return new Function("return " + mathString)(); // eslint-disable-line no-new-func
+    }
 
     function processEnterPress(enter) {
       if (enter === "=") {
@@ -200,8 +213,8 @@ function App() {
           .replace(/\u00f7/g, "/")
           .replace(/\u00d7/g, "*");
         try {
-          console.log(evaluatedString);
-          let result = eval(evaluatedString);
+        
+          let result = saferEval(evaluatedString);
           setDisplayString(result);
         } catch (error) {
           // Handle any evaluation errors
