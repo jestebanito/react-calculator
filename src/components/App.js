@@ -61,6 +61,7 @@ function App() {
       } else {
         setDisplayString(`${displayString}${number}`);
       }
+      setLastCharacter(number);
     }
 
     // function processDecimalPress(decimal) {
@@ -84,18 +85,70 @@ function App() {
         // If there's no decimal point in the current number or the last character is an operator,
         // you can add the decimal point.
         setDisplayString(`${displayString}${decimal}`);
+        setLastCharacter(decimal);
       }
     }
 
     function processOperatorPress(operator) {
-      if (!operatorExisted) {
+      if (!operatorExisted && operator !== "%" && operator !== "\u221a") {
         setDisplayString(`${displayString} ${operator} `);
+        setLastCharacter(operator);
         // setOperationCompleted(false);
         if (operator !== "%" && operator !== "\u221a") {
           setOperatorDisplay(operator);
         }
         operatorExisted = true;
-      } else {
+      } else if (operator === "%") {
+        const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
+        if (operatorExisted && !lastCharIsOperator) {
+          // Replace Unicode division symbol with actual '/'
+          let evaluatedString = displayString
+            // .replace(/\u00f7/g, "/")
+            // .replace(/\u00d7/g, "*");
+          try {
+            let result = eval(evaluatedString) / 100;
+            setDisplayString(result);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+
+          setOperationCompleted(true);
+        } else if (operatorExisted && lastCharIsOperator) {
+          let evaluatedString = displayString
+            // .replace(/\u00f7/g, "/")
+            // .replace(/\u00d7/g, "*");
+          let newEvaluatedString = evaluatedString.slice(0, -2);
+          console.log(newEvaluatedString);
+          try {
+            let result = eval(newEvaluatedString) / 100;
+            setDisplayString(result);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+
+          setOperationCompleted(true);
+        } else {
+          // Replace Unicode division symbol with actual '/'
+          let evaluatedString = displayString
+            // .replace(/\u00f7/g, "/")
+            // .replace(/\u00d7/g, "*");
+          try {
+            let result = eval(evaluatedString) / 100;
+            setDisplayString(result);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+
+          setOperationCompleted(true);
+        }
+      }
+      // else if (operator === "\u221a") {
+
+      // }
+      else {
         // Add the operator to the displayString
         // if (operator !== "%" && operator !== "\u221a") {
         //   setOperatorDisplay(operator);
@@ -119,23 +172,22 @@ function App() {
             evaluatedString.replace(/\u221a/g, "Math.sqrt(") + ")";
         }
         // Check if percent symbol is present
-        if (evaluatedString.includes("%")) {
-          // // Create variable to set evaluatedString to the formula on line 91 OUTSIDE of the arrow function scope
-          // let tempEvaluatedString = evaluatedString;
-          // // Check if percent symbol is present after a number
-          // const percentRegex = /(\d+)\s*%/g;
-          // evaluatedString = evaluatedString.replace(
-          //   percentRegex,
-          //   (_, num, index, input) => {
-          //     const percentage = parseInt(num, 10) * 0.01;
-          //     const precedingNumber = parseFloat(input.substring(0, index));
-          //     tempEvaluatedString = `(${precedingNumber} ${operatorDisplay} (${precedingNumber} * ${percentage}))`;
-          //     return "";
-          //   }
-          // );
-          // evaluatedString = tempEvaluatedString;
-        
-        }
+        // if (evaluatedString.includes("%")) {
+        // // Create variable to set evaluatedString to the formula on line 91 OUTSIDE of the arrow function scope
+        // let tempEvaluatedString = evaluatedString;
+        // // Check if percent symbol is present after a number
+        // const percentRegex = /(\d+)\s*%/g;
+        // evaluatedString = evaluatedString.replace(
+        //   percentRegex,
+        //   (_, num, index, input) => {
+        //     const percentage = parseInt(num, 10) * 0.01;
+        //     const precedingNumber = parseFloat(input.substring(0, index));
+        //     tempEvaluatedString = `(${precedingNumber} ${operatorDisplay} (${precedingNumber} * ${percentage}))`;
+        //     return "";
+        //   }
+        // );
+        // evaluatedString = tempEvaluatedString;
+        // }
         try {
           console.log(evaluatedString);
           let result = eval(evaluatedString);
