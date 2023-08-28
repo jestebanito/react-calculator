@@ -41,11 +41,11 @@ function App() {
     }
 
     // function processNumberPress(number) {
-    //   if (displayString === "0") {
-    //     setDisplayString(`${number}`);
-    //   } else {
-    //     setDisplayString(`${displayString}${number}`);
-    //   }
+      // if (displayString === "0") {
+      //   setDisplayString(`${number}`);
+      // } else {
+      //   setDisplayString(`${displayString}${number}`);
+      // }
     // }    
 
     function processNumberPress(number) {
@@ -86,7 +86,7 @@ function App() {
     
     function processOperatorPress(operator) {
       if (operationCompleted) {
-        setDisplayString(`${displayString}${operator}`);
+        setDisplayString(`${displayString} ${operator} `);
         setOperationCompleted(false);
         if (operator !== "%" && operator !== "\u221a") {
           setOperatorDisplay(operator);
