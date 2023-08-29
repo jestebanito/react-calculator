@@ -62,20 +62,42 @@ function App() {
     }
 
     function processDecimalPress(decimal) {
+
+      if(operationCompleted){
+        setDisplayString(`0.`);
+        setOperationCompleted(false);
+        return;
+      }
+
       // Check if the last character in the displayString is an operator
-      const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
+      let lastCharIsOperator = "+-%√÷×".includes(lastCharacter);
       const lastCharIsNumber = "0123456789".includes(lastCharacter);
+
+      if(lastCharIsOperator && displayString!="0"){ //new
+        setDisplayString(`${displayString}0.`);
+        lastCharIsOperator=false;
+        return;
+      }
 
       // Check if a decimal point already exists in the current number
       const decimalPointAlreadyExists = displayString.includes(".");
-
-      if (
-        !decimalPointAlreadyExists ||
-        lastCharIsNumber ||
-        lastCharIsOperator
-      ) {
-        // If a decimal point already exists in the current number and the last character is a number,
+      if (!decimalPointAlreadyExists || lastCharIsOperator) {
+        // If a decimal point already exists in the current number and the last character is an operator,
         // do nothing when trying to add another decimal point.
+        setDisplayString(`${displayString}${decimal}`);
+        setLastCharacter(decimal);
+      } else if (lastCharIsNumber) {
+        // If the last character is a number, check if the current number contains a decimal point.
+        // If it does, do nothing; otherwise, add the decimal point.
+        const numberParts = displayString.split(/[-+*/%√÷×]/); // Split by operators
+        const currentNumber = numberParts[numberParts.length - 1];
+        if (!currentNumber.includes(".")) {
+          setDisplayString(`${displayString}${decimal}`);
+          setLastCharacter(decimal);
+        }
+      } else if (lastCharIsNumber && !decimalPointAlreadyExists) {
+        // If the last character is a number and there's no decimal point in the current number,
+        // add the decimal point.
         setDisplayString(`${displayString}${decimal}`);
         setLastCharacter(decimal);
       }
