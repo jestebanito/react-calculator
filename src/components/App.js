@@ -7,7 +7,6 @@ import ButtonPad from "./ButtonPad";
 
 let operatorExisted = false;
 
-
 function App() {
   // use this state to update the value on display
   const [displayString, setDisplayString] = useState("0");
@@ -79,14 +78,14 @@ function App() {
       if (!operatorExisted && operator !== "%" && operator !== "\u221a") {
         setDisplayString(`${displayString} ${operator} `);
         setLastCharacter(operator);
-    
+
         // if (operator !== "%" && operator !== "\u221a") {
         //   setOperatorDisplay(operator);
         // }
         operatorExisted = true;
         // HANDLE PERCENTAGE
       } else if (operator === "%") {
-        const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
+        const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
         if (operatorExisted && !lastCharIsOperator) {
           // Replace Unicode division symbol with actual '/'
           let evaluatedString = displayString
@@ -136,7 +135,7 @@ function App() {
         }
         // HANDLE SQUARE ROOT
       } else if (operator === "\u221a") {
-        const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
+        const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
         if (operatorExisted && !lastCharIsOperator) {
           // Replace Unicode division symbol with actual '/'
           let evaluatedString = displayString
@@ -264,7 +263,7 @@ function App() {
     }
 
     function processMemoryPress(memory) {
-      const lastCharIsOperator = "+-*/".includes(lastCharacter);
+      const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
       // Memory Store
       if (memory === "MS") {
         if (operatorExisted && !lastCharIsOperator) {
@@ -288,7 +287,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -2);
+          let newEvaluatedString = evaluatedString.slice(0, -3);
 
           try {
             setMemoryValue(newEvaluatedString);
@@ -346,7 +345,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -2);
+          let newEvaluatedString = evaluatedString.slice(0, -3);
 
           try {
             let result = saferEval(newEvaluatedString) + saferEval(memoryValue);
@@ -362,8 +361,46 @@ function App() {
               saferEval(prevMemoryValue) + saferEval(displayString)
           );
         }
+        // Memory Subtract
       } else if (memory === "M-") {
+        if (operatorExisted && !lastCharIsOperator) {
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
 
+          try {
+            let result = saferEval(memoryValue) - saferEval(evaluatedString);
+            let stringResult = result.toString();
+            setMemoryValue(stringResult);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+        } else if (operatorExisted && lastCharIsOperator) {
+          console.log(operatorExisted);
+          console.log(lastCharIsOperator);
+          let evaluatedString = displayString
+            .toString()
+            .replace(/\u00f7/g, "/")
+            .replace(/\u00d7/g, "*");
+
+          let newEvaluatedString = evaluatedString.slice(0, -3);
+
+          try {
+            let result = saferEval(memoryValue) - saferEval(newEvaluatedString);
+            let stringResult = result.toString();
+            setMemoryValue(stringResult);
+          } catch (error) {
+            // Handle any evaluation errors
+            setDisplayString("Error");
+          }
+        } else {
+          setMemoryValue(
+            (prevMemoryValue) =>
+              saferEval(prevMemoryValue) - saferEval(displayString)
+          );
+        }
       }
     }
   }
