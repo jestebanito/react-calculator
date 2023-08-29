@@ -48,7 +48,7 @@ function App() {
     function processNumberPress(number) {
       // Added an if statement for when an operation is completed
       if (operationCompleted && operatorExisted) {
-        setDisplayString(`${displayString} ${number} `);
+        setDisplayString(`${displayString} ${number}`);
       } else if (operationCompleted) {
         setDisplayString(`${number}`);
         setOperationCompleted(false); // Reset operationCompleted
@@ -79,9 +79,6 @@ function App() {
         setDisplayString(`${displayString} ${operator} `);
         setLastCharacter(operator);
 
-        // if (operator !== "%" && operator !== "\u221a") {
-        //   setOperatorDisplay(operator);
-        // }
         operatorExisted = true;
         // HANDLE PERCENTAGE
       } else if (operator === "%") {
@@ -250,14 +247,18 @@ function App() {
         setSignValue(1);
         // setOperatorDisplay("");
       } else if (clear === "C") {
+        const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
         if (displayString.length === 2 && signDisplay === "-") {
           setDisplayString("0");
           setSignDisplay("");
           setSignValue(1);
         } else if (displayString.length === 1) {
           setDisplayString("0");
+        } else if (lastCharIsOperator) {
+          setDisplayString(displayString.slice(0, -2));
+          operatorExisted = false;
         } else {
-          setDisplayString(displayString.slice(0, -1));
+          setDisplayString(displayString.slice(0, -2));
         }
       }
     }
@@ -287,7 +288,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -3);
+          let newEvaluatedString = evaluatedString.slice(0, -2);
 
           try {
             setMemoryValue(newEvaluatedString);
@@ -345,7 +346,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -3);
+          let newEvaluatedString = evaluatedString.slice(0, -2);
 
           try {
             let result = saferEval(newEvaluatedString) + saferEval(memoryValue);
@@ -385,7 +386,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -3);
+          let newEvaluatedString = evaluatedString.slice(0, -2);
 
           try {
             let result = saferEval(memoryValue) - saferEval(newEvaluatedString);
