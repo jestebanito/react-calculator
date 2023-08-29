@@ -61,14 +61,16 @@ function App() {
     }
 
     function processDecimalPress(decimal) {
-      // Check if the last character in the displayString is an operator
+        // Check if the last character in the displayString is an operator
       const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
+      const lastCharIsNumber = "0123456789".includes(lastCharacter);
 
-      // Check if a decimal point already exists in the current number
+        // Check if a decimal point already exists in the current number
       const decimalPointAlreadyExists = displayString.includes(".");
-      if (!decimalPointAlreadyExists || lastCharIsOperator) {
-        // If there's no decimal point in the current number or the last character is an operator,
-        // you can add the decimal point.
+
+      if (!decimalPointAlreadyExists || lastCharIsNumber || lastCharIsOperator) {
+        // If a decimal point already exists in the current number and the last character is a number,
+        // do nothing when trying to add another decimal point.
         setDisplayString(`${displayString}${decimal}`);
         setLastCharacter(decimal);
       }
