@@ -161,7 +161,7 @@ function App() {
       } else if (operator === "\u221a") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
         if (operatorExisted && !lastCharIsOperator) {
-          // Replace Unicode division symbol with actual '/'
+          // Replace Unicode division symbol with actual '/, *'
           let evaluatedString = displayString
             .toString()
             .replace(/\u00f7/g, "/")
@@ -197,7 +197,7 @@ function App() {
 
           setOperationCompleted(true);
         } else {
-          // Replace Unicode division symbol with actual '/'
+          // Replace Unicode division symbol with actual '/, *'
 
           let evaluatedString = displayString
             .toString()
@@ -233,7 +233,7 @@ function App() {
     function processEnterPress(enter) {
       if (enter === "=") {
         operatorExisted = false;
-        // Replace Unicode division symbol with actual '/'
+        // Replace Unicode division symbol with actual '/, *'
         let evaluatedString = displayString
           .toString()
           .replace(/\u00f7/g, "/")
@@ -278,8 +278,6 @@ function App() {
         operatorExisted = false;
         setOperationCompleted(false);
         setSignDisplay("");
-
-        // setOperatorDisplay("");
       } else if (clear === "C") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
         //make sure displayString is string type
@@ -303,7 +301,7 @@ function App() {
       // Memory Store
       if (memory === "MS") {
         if (operatorExisted && !lastCharIsOperator) {
-          // Replace Unicode division symbol with actual '/'
+          // Replace Unicode division symbol with actual '/, *'
           let evaluatedString = displayString
             .toString()
             .replace(/\u00f7/g, "/")
@@ -332,7 +330,7 @@ function App() {
             setDisplayString("Error");
           }
         } else {
-          // Replace Unicode division symbol with actual '/'
+          // Replace Unicode division symbol with actual '/, *'
 
           let evaluatedString = displayString
             .toString()
