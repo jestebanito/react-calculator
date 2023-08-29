@@ -18,6 +18,7 @@ function App() {
   const [operationCompleted, setOperationCompleted] = useState(false);
   // created a memory state to store memory value
   const [memoryValue, setMemoryValue] = useState("0");
+  const [lastOperator, setLastOperator] = useState("");
 
   function handleButtonPress(buttonData) {
     switch (buttonData.type) {
@@ -48,7 +49,7 @@ function App() {
     function processNumberPress(number) {
       // Added an if statement for when an operation is completed
       if (operationCompleted && operatorExisted) {
-        setDisplayString(`${displayString} ${number}`);
+        setDisplayString(`${displayString}${number}`);
       } else if (operationCompleted) {
         setDisplayString(`${number}`);
         setOperationCompleted(false); // Reset operationCompleted
@@ -61,14 +62,18 @@ function App() {
     }
 
     function processDecimalPress(decimal) {
-        // Check if the last character in the displayString is an operator
+      // Check if the last character in the displayString is an operator
       const lastCharIsOperator = "+-*/%√".includes(lastCharacter);
       const lastCharIsNumber = "0123456789".includes(lastCharacter);
 
-        // Check if a decimal point already exists in the current number
+      // Check if a decimal point already exists in the current number
       const decimalPointAlreadyExists = displayString.includes(".");
 
-      if (!decimalPointAlreadyExists || lastCharIsNumber || lastCharIsOperator) {
+      if (
+        !decimalPointAlreadyExists ||
+        lastCharIsNumber ||
+        lastCharIsOperator
+      ) {
         // If a decimal point already exists in the current number and the last character is a number,
         // do nothing when trying to add another decimal point.
         setDisplayString(`${displayString}${decimal}`);
@@ -80,7 +85,7 @@ function App() {
       if (!operatorExisted && operator !== "%" && operator !== "\u221a") {
         setDisplayString(`${displayString} ${operator} `);
         setLastCharacter(operator);
-
+        setLastOperator(operator);
         operatorExisted = true;
         // HANDLE PERCENTAGE
       } else if (operator === "%") {
@@ -94,6 +99,7 @@ function App() {
           try {
             let result = saferEval(evaluatedString) / 100;
             setDisplayString(result);
+            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -110,6 +116,7 @@ function App() {
           try {
             let result = saferEval(newEvaluatedString) / 100;
             setDisplayString(result);
+            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -125,6 +132,7 @@ function App() {
           try {
             let result = saferEval(evaluatedString) / 100;
             setDisplayString(result);
+            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -132,6 +140,7 @@ function App() {
 
           setOperationCompleted(true);
         }
+        setLastOperator(operator);
         // HANDLE SQUARE ROOT
       } else if (operator === "\u221a") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
@@ -148,6 +157,7 @@ function App() {
             console.log(result);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
+            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -166,6 +176,7 @@ function App() {
             let result = saferEval(newEvaluatedString);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
+            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -184,6 +195,7 @@ function App() {
             let result = saferEval(evaluatedString);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
+            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -192,7 +204,9 @@ function App() {
           setOperationCompleted(true);
         }
       }
+      setLastOperator(operator);
     }
+
     function saferEval(mathString) {
       const notValid = /[a-zA-Z|;]/g.test(mathString);
       if (notValid) {
@@ -223,18 +237,18 @@ function App() {
         }
         // Set the boolean value to true if enter === "="
         setOperationCompleted(true);
+        setLastOperator("");
       }
     }
-
+    
     function processSignPress() {
       const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
-      if (operatorExisted && !lastCharIsOperator && signDisplay === "-") {
-        let removedOperatorAndLastCharacter = displayString.slice(0,-3);
-        setDisplayString(`${removedOperatorAndLastCharacter}+ ${lastCharacter}`);
+     if (operatorExisted && !lastCharIsOperator && signDisplay === "-") {
+      let removedString = displayString.slice(4);
+        setDisplayString(removedString);
         setSignDisplay("");
       } else if (operatorExisted && !lastCharIsOperator) {
-        let removedOperatorAndLastCharacter = displayString.slice(0,-3);
-        setDisplayString(`${removedOperatorAndLastCharacter}- ${lastCharacter}`);
+        setDisplayString(`-1\u00d7 ${displayString}`);
         setSignDisplay("-");
       } else if (signDisplay === "") {
         console.log('Step 3');
@@ -244,7 +258,6 @@ function App() {
           setDisplayString(`-${displayString}`);
         }
       } else {
-        
         setSignDisplay("");
         setSignValue(1);
         setDisplayString(displayString.substring(1));
@@ -257,6 +270,7 @@ function App() {
         operatorExisted = false;
         setOperationCompleted(false);
         setSignDisplay("");
+        setLastOperator("");
         setSignValue(1);
         // setOperatorDisplay("");
       } else if (clear === "C") {
