@@ -1,5 +1,6 @@
 {
   "name": "calculator-project",
+  "contributors":["Jack", "Josh", "Jet", "Preston"],
   "version": "0.1.0",
   "private": true,
   "dependencies": {

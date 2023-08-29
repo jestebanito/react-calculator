@@ -12,13 +12,10 @@ function App() {
   const [displayString, setDisplayString] = useState("0");
   const [lastCharacter, setLastCharacter] = useState("");
   const [signDisplay, setSignDisplay] = useState("");
-  const [signValue, setSignValue] = useState(1);
-  // const [operatorDisplay, setOperatorDisplay] = useState("");
   // created a new state variable to track if an operation has been completed
   const [operationCompleted, setOperationCompleted] = useState(false);
   // created a memory state to store memory value
   const [memoryValue, setMemoryValue] = useState("0");
-  const [lastOperator, setLastOperator] = useState("");
 
   function handleButtonPress(buttonData) {
     switch (buttonData.type) {
@@ -62,8 +59,7 @@ function App() {
     }
 
     function processDecimalPress(decimal) {
-
-      if(operationCompleted){
+      if (operationCompleted) {
         setDisplayString(`0.`);
         setOperationCompleted(false);
         return;
@@ -73,9 +69,10 @@ function App() {
       let lastCharIsOperator = "+-%√÷×".includes(lastCharacter);
       const lastCharIsNumber = "0123456789".includes(lastCharacter);
 
-      if(lastCharIsOperator && displayString!="0"){ //new
+      if (lastCharIsOperator && displayString != "0") {
+        //new
         setDisplayString(`${displayString}0.`);
-        lastCharIsOperator=false;
+        lastCharIsOperator = false;
         return;
       }
 
@@ -107,7 +104,7 @@ function App() {
       if (!operatorExisted && operator !== "%" && operator !== "\u221a") {
         setDisplayString(`${displayString} ${operator} `);
         setLastCharacter(operator);
-        setLastOperator(operator);
+
         operatorExisted = true;
         // HANDLE PERCENTAGE
       } else if (operator === "%") {
@@ -121,7 +118,6 @@ function App() {
           try {
             let result = saferEval(evaluatedString) / 100;
             setDisplayString(result);
-            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -134,11 +130,10 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
           let newEvaluatedString = evaluatedString.slice(0, -2);
-          console.log(newEvaluatedString);
+
           try {
             let result = saferEval(newEvaluatedString) / 100;
             setDisplayString(result);
-            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -154,7 +149,6 @@ function App() {
           try {
             let result = saferEval(evaluatedString) / 100;
             setDisplayString(result);
-            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -162,7 +156,7 @@ function App() {
 
           setOperationCompleted(true);
         }
-        setLastOperator(operator);
+
         // HANDLE SQUARE ROOT
       } else if (operator === "\u221a") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
@@ -174,12 +168,10 @@ function App() {
             .replace(/\u00d7/g, "*");
 
           try {
-            console.log("enter step 1");
             let result = saferEval(evaluatedString);
-            console.log(result);
+
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
-            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -193,12 +185,11 @@ function App() {
             .replace(/\u00d7/g, "*");
 
           let newEvaluatedString = evaluatedString.slice(0, -2);
-          console.log(newEvaluatedString);
+
           try {
             let result = saferEval(newEvaluatedString);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
-            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -217,7 +208,6 @@ function App() {
             let result = saferEval(evaluatedString);
             let resultAfterSquareRoot = Math.sqrt(result);
             setDisplayString(resultAfterSquareRoot);
-            setLastOperator("");
           } catch (error) {
             // Handle any evaluation errors
             setDisplayString("Error");
@@ -226,7 +216,6 @@ function App() {
           setOperationCompleted(true);
         }
       }
-      setLastOperator(operator);
     }
 
     function saferEval(mathString) {
@@ -255,33 +244,30 @@ function App() {
         } catch (error) {
           // Handle any evaluation errors
           setDisplayString("Error");
-          console.log(error);
         }
         // Set the boolean value to true if enter === "="
         setOperationCompleted(true);
-        setLastOperator("");
       }
     }
-    
+
     function processSignPress() {
       const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
-     if (operatorExisted && !lastCharIsOperator && signDisplay === "-") {
-      let removedString = displayString.slice(4);
+      if (operatorExisted && !lastCharIsOperator && signDisplay === "-") {
+        let removedString = displayString.slice(4);
         setDisplayString(removedString);
         setSignDisplay("");
       } else if (operatorExisted && !lastCharIsOperator) {
         setDisplayString(`-1\u00d7 ${displayString}`);
         setSignDisplay("-");
       } else if (signDisplay === "") {
-        console.log('Step 3');
         if (displayString !== "0") {
           setSignDisplay("-");
-          setSignValue(-1);
+
           setDisplayString(`-${displayString}`);
         }
       } else {
         setSignDisplay("");
-        setSignValue(1);
+
         setDisplayString(displayString.substring(1));
       }
     }
@@ -292,8 +278,7 @@ function App() {
         operatorExisted = false;
         setOperationCompleted(false);
         setSignDisplay("");
-        setLastOperator("");
-        setSignValue(1);
+
         // setOperatorDisplay("");
       } else if (clear === "C") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
@@ -302,7 +287,6 @@ function App() {
         if (newDisplayString.length === 2 && signDisplay === "-") {
           setDisplayString("0");
           setSignDisplay("");
-          setSignValue(1);
         } else if (newDisplayString.length === 1) {
           setDisplayString("0");
         } else if (lastCharIsOperator) {
@@ -430,8 +414,6 @@ function App() {
             setDisplayString("Error");
           }
         } else if (operatorExisted && lastCharIsOperator) {
-          console.log(operatorExisted);
-          console.log(lastCharIsOperator);
           let evaluatedString = displayString
             .toString()
             .replace(/\u00f7/g, "/")
