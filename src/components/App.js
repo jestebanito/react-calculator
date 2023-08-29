@@ -225,13 +225,24 @@ function App() {
     }
 
     function processSignPress() {
-      if (signDisplay === "") {
+      const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
+      if (operatorExisted && !lastCharIsOperator && signDisplay === "-") {
+        let removedOperatorAndLastCharacter = displayString.slice(0,-3);
+        setDisplayString(`${removedOperatorAndLastCharacter}+ ${lastCharacter}`);
+        setSignDisplay("");
+      } else if (operatorExisted && !lastCharIsOperator) {
+        let removedOperatorAndLastCharacter = displayString.slice(0,-3);
+        setDisplayString(`${removedOperatorAndLastCharacter}- ${lastCharacter}`);
+        setSignDisplay("-");
+      } else if (signDisplay === "") {
+        console.log('Step 3');
         if (displayString !== "0") {
           setSignDisplay("-");
           setSignValue(-1);
           setDisplayString(`-${displayString}`);
         }
       } else {
+        
         setSignDisplay("");
         setSignValue(1);
         setDisplayString(displayString.substring(1));
@@ -248,17 +259,19 @@ function App() {
         // setOperatorDisplay("");
       } else if (clear === "C") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
-        if (displayString.length === 2 && signDisplay === "-") {
+        //make sure displayString is string type
+        let newDisplayString = displayString.toString();
+        if (newDisplayString.length === 2 && signDisplay === "-") {
           setDisplayString("0");
           setSignDisplay("");
           setSignValue(1);
-        } else if (displayString.length === 1) {
+        } else if (newDisplayString.length === 1) {
           setDisplayString("0");
         } else if (lastCharIsOperator) {
-          setDisplayString(displayString.slice(0, -2));
+          setDisplayString(newDisplayString.slice(0, -2));
           operatorExisted = false;
         } else {
-          setDisplayString(displayString.slice(0, -2));
+          setDisplayString(newDisplayString.slice(0, -1));
         }
       }
     }
