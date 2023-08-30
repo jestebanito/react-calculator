@@ -59,22 +59,26 @@ function App() {
     }
 
     function processDecimalPress(decimal) {
-      if (operationCompleted) {
+      // Check if the last character in the displayString is an operator
+      let lastCharIsOperator = "+-%√÷×".includes(lastCharacter);
+      const lastCharIsNumber = "0123456789".includes(lastCharacter);
+
+      if (operationCompleted && lastCharIsOperator) {
+        setDisplayString(`${displayString}0${decimal}`);
+        setOperationCompleted(false);
+        return;
+      } else if (operationCompleted) {
         setDisplayString(`0.`);
         setOperationCompleted(false);
         return;
       }
 
-      // Check if the last character in the displayString is an operator
-      let lastCharIsOperator = "+-%√÷×".includes(lastCharacter);
-      const lastCharIsNumber = "0123456789".includes(lastCharacter);
-
-      if (lastCharIsOperator && displayString != "0") {
-        //new
-        setDisplayString(`${displayString}0.`);
-        lastCharIsOperator = false;
-        return;
-      }
+      // if (lastCharIsOperator && displayString != "0") {
+      //   //new
+      //   setDisplayString(`${displayString}0.`);
+      //   lastCharIsOperator = false;
+      //   return;
+      // }
 
       // Check if a decimal point already exists in the current number
       const decimalPointAlreadyExists = displayString.includes(".");
@@ -101,7 +105,6 @@ function App() {
     }
 
     function processOperatorPress(operator) {
-      console.log(operatorExisted);
       if (!operatorExisted && operator !== "%" && operator !== "\u221a") {
         setDisplayString(`${displayString}${operator}`);
         setLastCharacter(operator);
@@ -130,7 +133,7 @@ function App() {
             .toString()
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
-          let newEvaluatedString = evaluatedString.slice(0, -2);
+          let newEvaluatedString = evaluatedString.slice(0, -1);
 
           try {
             let result = saferEval(newEvaluatedString) / 100;
@@ -185,7 +188,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -2);
+          let newEvaluatedString = evaluatedString.slice(0, -1);
 
           try {
             let result = saferEval(newEvaluatedString);
@@ -336,7 +339,7 @@ function App() {
       } else if (clear === "C") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
         let newDisplayString = displayString.toString();
-        
+
         if (newDisplayString.length === 2 && signDisplay === "-") {
           setDisplayString("0");
           setSignDisplay("");
@@ -345,20 +348,16 @@ function App() {
           setDisplayString("0");
           setLastCharacter("");
         } else if (lastCharacter === lastCharIsOperator) {
-          setDisplayString(newDisplayString.slice(0, -2));
+          setDisplayString(newDisplayString.slice(0, -1));
           operatorExisted = false;
           setLastCharacter("");
         } else {
           operatorExisted = false;
           setDisplayString(newDisplayString.slice(0, -1));
           setLastCharacter(newDisplayString.slice(-2, -1));
-          console.log("delete happen here");
         }
-        
       }
     }
-    
-    
 
     function processMemoryPress(memory) {
       const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
@@ -385,7 +384,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -2);
+          let newEvaluatedString = evaluatedString.slice(0, -1);
 
           try {
             setMemoryValue(newEvaluatedString);
@@ -417,7 +416,7 @@ function App() {
       } else if (memory === "MR") {
         if (operatorExisted && lastCharIsOperator) {
           // check if there is there is one operator existed already eg: 10 +
-          setDisplayString(`${displayString} ${memoryValue} `);
+          setDisplayString(`${displayString}${memoryValue}`);
         } else {
           setDisplayString(memoryValue);
         }
@@ -443,7 +442,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -2);
+          let newEvaluatedString = evaluatedString.slice(0, -1);
 
           try {
             let result = saferEval(newEvaluatedString) + saferEval(memoryValue);
@@ -481,7 +480,7 @@ function App() {
             .replace(/\u00f7/g, "/")
             .replace(/\u00d7/g, "*");
 
-          let newEvaluatedString = evaluatedString.slice(0, -2);
+          let newEvaluatedString = evaluatedString.slice(0, -1);
 
           try {
             let result = saferEval(memoryValue) - saferEval(newEvaluatedString);
