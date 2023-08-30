@@ -101,8 +101,9 @@ function App() {
     }
 
     function processOperatorPress(operator) {
+      console.log(operatorExisted);
       if (!operatorExisted && operator !== "%" && operator !== "\u221a") {
-        setDisplayString(`${displayString} ${operator} `);
+        setDisplayString(`${displayString}${operator}`);
         setLastCharacter(operator);
 
         operatorExisted = true;
@@ -272,29 +273,92 @@ function App() {
       }
     }
 
+    // function processClearPress(clear) {
+    //   if (clear === "AC") {
+    //     setDisplayString("0");
+    //     operatorExisted = false;
+    //     setOperationCompleted(false);
+    //     setSignDisplay("");
+    //   } else if (clear === "C") {
+    //     const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
+    //     //make sure displayString is string type
+    //     let newDisplayString = displayString.toString();
+    //     if (newDisplayString.length === 2 && signDisplay === "-") {
+    //       setDisplayString("0");
+    //       setSignDisplay("");
+    //     } else if (newDisplayString.length === 1) {
+    //       setDisplayString("0");
+    //     } else if (lastCharIsOperator) {
+    //       setDisplayString(newDisplayString.slice(0, -2));
+    //       operatorExisted = false;
+    //     } else {
+    //       setDisplayString(newDisplayString.slice(0, -1));
+    //     }
+    //   }
+    // }
+
+    // function processClearPress(clear) {
+    //   if (clear === "AC") {
+    //     setDisplayString("0");
+    //     operatorExisted = false;
+    //     setOperationCompleted(false);
+    //     setSignDisplay("");
+    //     setLastCharacter(""); // Reset lastCharacter when clearing
+    //   } else if (clear === "C") {
+    //     const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
+    //     // Make sure displayString is string type
+    //     let newDisplayString = displayString.toString();
+    //     if (newDisplayString.length === 2 && signDisplay === "-") {
+    //       setDisplayString("0");
+    //       setSignDisplay("");
+    //       setLastCharacter(""); // Reset lastCharacter
+    //     } else if (newDisplayString.length === 1) {
+    //       setDisplayString("0");
+    //       setLastCharacter(""); // Reset lastCharacter
+    //     } else if (lastCharIsOperator) {
+    //       setDisplayString(newDisplayString.slice(0, -2));
+    //       operatorExisted = false;
+    //       setLastCharacter(""); // Reset lastCharacter
+    //     } else {
+    //       setDisplayString(newDisplayString.slice(0, -1));
+    //       setLastCharacter(newDisplayString.slice(-2, -1)); // Update lastCharacter
+    //     }
+    //   }
+    // }
+
     function processClearPress(clear) {
       if (clear === "AC") {
         setDisplayString("0");
         operatorExisted = false;
         setOperationCompleted(false);
         setSignDisplay("");
+        setLastCharacter("");
       } else if (clear === "C") {
         const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
-        //make sure displayString is string type
         let newDisplayString = displayString.toString();
+        
         if (newDisplayString.length === 2 && signDisplay === "-") {
           setDisplayString("0");
           setSignDisplay("");
+          setLastCharacter("");
         } else if (newDisplayString.length === 1) {
           setDisplayString("0");
-        } else if (lastCharIsOperator) {
+          setLastCharacter("");
+        } else if (lastCharacter === lastCharIsOperator) {
           setDisplayString(newDisplayString.slice(0, -2));
           operatorExisted = false;
+          setLastCharacter("");
         } else {
+          operatorExisted = false;
           setDisplayString(newDisplayString.slice(0, -1));
+          setLastCharacter(newDisplayString.slice(-2, -1));
+          console.log("delete happen here");
         }
+        
       }
     }
+    
+    
 
     function processMemoryPress(memory) {
       const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
