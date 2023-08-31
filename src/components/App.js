@@ -67,18 +67,14 @@ function App() {
         setDisplayString(`${displayString}0${decimal}`);
         setOperationCompleted(false);
         return;
+      } else if (operationCompleted && lastCharIsNumber) {
+        setDisplayString(`${displayString}${decimal}`);
+        setOperationCompleted(false);
       } else if (operationCompleted) {
         setDisplayString(`0.`);
         setOperationCompleted(false);
         return;
       }
-
-      // if (lastCharIsOperator && displayString != "0") {
-      //   //new
-      //   setDisplayString(`${displayString}0.`);
-      //   lastCharIsOperator = false;
-      //   return;
-      // }
 
       // Check if a decimal point already exists in the current number
       const decimalPointAlreadyExists = displayString.includes(".");
@@ -275,59 +271,6 @@ function App() {
         setDisplayString(displayString.substring(1));
       }
     }
-
-    // function processClearPress(clear) {
-    //   if (clear === "AC") {
-    //     setDisplayString("0");
-    //     operatorExisted = false;
-    //     setOperationCompleted(false);
-    //     setSignDisplay("");
-    //   } else if (clear === "C") {
-    //     const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
-    //     //make sure displayString is string type
-    //     let newDisplayString = displayString.toString();
-    //     if (newDisplayString.length === 2 && signDisplay === "-") {
-    //       setDisplayString("0");
-    //       setSignDisplay("");
-    //     } else if (newDisplayString.length === 1) {
-    //       setDisplayString("0");
-    //     } else if (lastCharIsOperator) {
-    //       setDisplayString(newDisplayString.slice(0, -2));
-    //       operatorExisted = false;
-    //     } else {
-    //       setDisplayString(newDisplayString.slice(0, -1));
-    //     }
-    //   }
-    // }
-
-    // function processClearPress(clear) {
-    //   if (clear === "AC") {
-    //     setDisplayString("0");
-    //     operatorExisted = false;
-    //     setOperationCompleted(false);
-    //     setSignDisplay("");
-    //     setLastCharacter(""); // Reset lastCharacter when clearing
-    //   } else if (clear === "C") {
-    //     const lastCharIsOperator = "+-*/÷×".includes(lastCharacter);
-    //     // Make sure displayString is string type
-    //     let newDisplayString = displayString.toString();
-    //     if (newDisplayString.length === 2 && signDisplay === "-") {
-    //       setDisplayString("0");
-    //       setSignDisplay("");
-    //       setLastCharacter(""); // Reset lastCharacter
-    //     } else if (newDisplayString.length === 1) {
-    //       setDisplayString("0");
-    //       setLastCharacter(""); // Reset lastCharacter
-    //     } else if (lastCharIsOperator) {
-    //       setDisplayString(newDisplayString.slice(0, -2));
-    //       operatorExisted = false;
-    //       setLastCharacter(""); // Reset lastCharacter
-    //     } else {
-    //       setDisplayString(newDisplayString.slice(0, -1));
-    //       setLastCharacter(newDisplayString.slice(-2, -1)); // Update lastCharacter
-    //     }
-    //   }
-    // }
 
     function processClearPress(clear) {
       if (clear === "AC") {
